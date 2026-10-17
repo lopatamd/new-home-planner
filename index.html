@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Shared shopping planner for moving into a new home in Stockholm." />
+    <title>Our New Home — Shopping Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero wrap">
+      <h1 id="hero-title">Our New Home — Shopping Planner</h1>
+      <p class="sub" id="hero-sub">Stockholm · 3-bedroom · move-in 1 Dec 2026</p>
+      <div class="countdown" aria-live="polite">
+        <span><span id="countdown-days">—</span> days until move-in</span>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="panel" aria-labelledby="summary-heading">
+        <h2 id="summary-heading">Budget & progress</h2>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="label">Estimated range</div>
+            <div class="value" id="stat-range">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">Typical total</div>
+            <div class="value" id="stat-typical">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">Checked (cost range)</div>
+            <div class="value" id="stat-checked-cost">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">Items done</div>
+            <div class="value" id="stat-checked-count">—</div>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>Shopping progress</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+        <p style="margin: 0.75rem 0 0; font-size: 0.8rem; color: var(--muted)">
+          Totals exclude “We’re handling it” items. Prices are rough Stockholm retail ranges (IKEA, Jysk, Elgiganten, Mio).
+        </p>
+      </section>
+
+      <section class="panel" aria-labelledby="sync-heading">
+        <h2 id="sync-heading">Sync & backup</h2>
+        <div class="toolbar">
+          <button type="button" class="btn btn-primary" id="btn-share">Copy share link</button>
+          <button type="button" class="btn btn-secondary" id="btn-export">Export JSON</button>
+          <button type="button" class="btn btn-secondary" id="btn-import">Import JSON</button>
+          <input type="file" id="import-file" accept="application/json,.json" class="hidden" />
+          <button type="button" class="btn btn-ghost" id="btn-reset">Reset list</button>
+        </div>
+        <p style="margin: 0.75rem 0 0; font-size: 0.8rem; color: var(--muted)">
+          Share the link after you check items — your partner opens it to load the same plan. Export JSON for a full backup.
+        </p>
+      </section>
+
+      <section class="panel" aria-labelledby="filter-heading">
+        <h2 id="filter-heading">Filters</h2>
+        <div class="filters">
+          <div>
+            <label for="filter-urgency">Urgency</label>
+            <select id="filter-urgency" aria-label="Filter by urgency">
+              <option value="all">All urgencies</option>
+              <option value="before-move-in">Before move-in</option>
+              <option value="first-week">First week</option>
+              <option value="first-month">First month</option>
+              <option value="later">Later / nice to have</option>
+            </select>
+          </div>
+          <div>
+            <label for="filter-room">Room</label>
+            <select id="filter-room" aria-label="Filter by room">
+              <option value="all">All rooms</option>
+              <option value="bedroom-1">Bedroom 1</option>
+              <option value="bedroom-2">Bedroom 2</option>
+              <option value="bedroom-3">Bedroom 3</option>
+              <option value="living">Living room</option>
+              <option value="hallway">Hallway</option>
+              <option value="kitchen">Kitchen</option>
+              <option value="bathroom">Bathroom</option>
+              <option value="office-nursery">Office / nursery</option>
+              <option value="general">General</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel section-handling" aria-labelledby="handling-heading">
+        <h2 id="handling-heading">We’re handling it</h2>
+        <p style="margin: 0 0 0.75rem; font-size: 0.85rem; color: var(--muted)">
+          Not counted in budget totals — still check off when done. Order the bed ASAP (~4 week delivery).
+        </p>
+        <div id="handling-list"></div>
+      </section>
+
+      <section aria-labelledby="catalog-heading">
+        <h2 id="catalog-heading" style="font-size: 1.1rem; margin: 0 0 0.75rem">Shopping list</h2>
+        <div id="catalog-sections"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="add-heading">
+        <h2 id="add-heading">Add custom item</h2>
+        <form id="add-item-form" class="add-form">
+          <input type="text" name="name" class="full" placeholder="Item name" required aria-label="Item name" />
+          <div class="row">
+            <select name="room" aria-label="Room">
+              <option value="general">General</option>
+              <option value="bedroom-1">Bedroom 1</option>
+              <option value="bedroom-2">Bedroom 2</option>
+              <option value="bedroom-3">Bedroom 3</option>
+              <option value="living">Living room</option>
+              <option value="hallway">Hallway</option>
+              <option value="kitchen">Kitchen</option>
+              <option value="bathroom">Bathroom</option>
+              <option value="office-nursery">Office / nursery</option>
+            </select>
+            <select name="urgency" aria-label="Urgency">
+              <option value="before-move-in">Before move-in</option>
+              <option value="first-week">First week</option>
+              <option value="first-month">First month</option>
+              <option value="later">Later / nice to have</option>
+            </select>
+          </div>
+          <div class="row">
+            <input type="number" name="priceMin" min="0" step="50" placeholder="Min SEK" aria-label="Minimum price" />
+            <input type="number" name="priceMax" min="0" step="50" placeholder="Max SEK" aria-label="Maximum price" />
+          </div>
+          <select name="buyer" aria-label="Who is buying">
+            <option value="either">Either</option>
+            <option value="vasile">Vasile</option>
+            <option value="huda">Huda</option>
+          </select>
+          <input type="text" name="note" class="full" placeholder="Optional note" aria-label="Note" />
+          <label class="full" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem">
+            <input type="checkbox" name="handling" />
+            Add to “We’re handling it” (exclude from totals)
+          </label>
+          <button type="submit" class="btn btn-primary">Add item</button>
+        </form>
+      </section>
+
+      <footer>
+        Move-in 1 December 2026 · Data stays in your browser unless you share or export.
+      </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
